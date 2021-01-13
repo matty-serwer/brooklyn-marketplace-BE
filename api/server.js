@@ -16,4 +16,8 @@ server.use(express.json());
 server.use('/api/auth', authRouter);
 server.use('/api/users', restricted, usersRouter);
 
+server.get('/', (req, res) => {
+  res.json({ api: 'Brooklyn Marketplace API up' });
+})
+
 module.exports = server;
