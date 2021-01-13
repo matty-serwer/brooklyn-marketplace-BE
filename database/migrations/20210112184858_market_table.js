@@ -26,6 +26,27 @@ exports.up = function (knex) {
       tbl.increments();
       tbl.string("name", 128).notNullable().unique();
     })
+    .createTable("merchants", (tbl) => {
+      tbl.increments();
+      tbl
+        .integer("user_id")
+        .unsigned()
+        .required()
+        .references("id")
+        .inTable("users")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
+      tbl
+        .integer("location_id")
+        .unsigned()
+        .required()
+        .references("id")
+        .inTable("locations")
+        .onDelete("RESTRICT")
+        .onUpdate("RESTRICT");
+      tbl.string("description");
+      tbl.string("img_url");
+    })
     .createTable("items", (tbl) => {
       tbl.increments();
       tbl.string("name", 128).notNullable();
@@ -48,35 +69,15 @@ exports.up = function (knex) {
         .onUpdate("CASCADE");
       tbl.string("description");
       tbl.string("img_url");
-    })
-    .createTable("merchants", (tbl) => {
-      tbl.increments();
-      tbl
-        .integer("user_id")
-        .unsigned()
-        .required()
-        .references("id")
-        .inTable("users")
-        .onDelete("CASCADE")
-        .onUpdate("CASCADE");
-      tbl
-        .integer("location_id")
-        .unsigned()
-        .required()
-        .references("id")
-        .inTable("locations")
-        .onDelete("RESTRICT")
-        .onUpdate("RESTRICT");
-      tbl.string("description");
-      tbl.string("img_url");
     });
 };
 
 exports.down = function (knex) {
   return knex.schema
-    .dropTableIfExists("merchants")
     .dropTableIfExists("items")
+    .dropTableIfExists("merchants")
     .dropTableIfExists("categories")
+    .dropTableIfExists("locations")
     .dropTableIfExists("users")
     .dropTableIfExists("roles");
 };
