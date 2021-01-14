@@ -21,6 +21,9 @@ exports.up = function (knex) {
     .createTable("locations", (tbl) => {
       tbl.increments();
       tbl.string("name", 128).notNullable().unique();
+      tbl.string("neighborhood")
+      tbl.string("gmap_url");
+      tbl.string("website_url");
     })
     .createTable("categories", (tbl) => {
       tbl.increments();
