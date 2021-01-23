@@ -31,6 +31,7 @@ exports.up = function (knex) {
     })
     .createTable("merchants", (tbl) => {
       tbl.increments();
+      tbl.string("name", 128).notNullable().unique();
       tbl
         .integer("user_id")
         .unsigned()
@@ -53,7 +54,7 @@ exports.up = function (knex) {
     .createTable("items", (tbl) => {
       tbl.increments();
       tbl.string("name", 128).notNullable();
-      tbl.float("price").notNullable();
+      tbl.string("price");
       tbl
         .integer("category_id")
         .unsigned()
