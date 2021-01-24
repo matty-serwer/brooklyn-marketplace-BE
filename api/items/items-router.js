@@ -1,12 +1,7 @@
-//   get,
-//   getById,
-//   insert,
-//   update,
-//   remove,
-
 const router = require("express").Router();
 const Item = require("./items-model");
 const checkId = require("./../middleware/check-my-id-middleware");
+const restricted = require("./../middleware/restricted");
 
 router.get("/", (req, res) => {
   Item.get()
@@ -34,7 +29,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.post("/", (req, res) => {
+router.post("/", restricted, (req, res) => {
   // checkId(req.body.user_id);
   Item.insert(req.body)
     .then((item) => {
@@ -46,7 +41,7 @@ router.post("/", (req, res) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", restricted, (req, res) => {
   // checkId(req.body.user_id);
   Item.update(req.params.id)
     .then((item) => {
@@ -58,14 +53,16 @@ router.put("/:id", (req, res) => {
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", restricted, (req, res) => {
   // get item first, then checkId(req.body.user_id);
-  Item.delete(req.params.id)
+  Item.remove(req.params.id)
     .then((count) => {
-      res.status(201).json({ message: `${count} item(s) deleted`});
+      res.status(201).json({ message: `${count} item(s) deleted` });
     })
     .catch((error) => {
       console.log(error.message);
       res.status(500).json({ message: "Server Error: Failed to delete item." });
     });
 });
+
+module.exports = router;
