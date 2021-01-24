@@ -3,6 +3,7 @@ const Merchant = require("./merchants-router");
 const mid = require("./../middleware/users-middleware");
 const checkMyId = require("./../middleware/check-my-id-middleware");
 const restricted = require("./../middleware/restricted");
+const { validateMerchantBody, validateMerchantIdParam } = require("./merchants-middleware");
 
 // endpoints
 
@@ -16,7 +17,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", mid.validateUserIdParam, (req, res) => {
+router.get("/:id", mid.validateUserIdParam, validateMerchantIdParam, (req, res) => {
   Merchant.getById(req.params.id)
     .then((merchant) => {
       res.status(200).json(merchant);
@@ -29,7 +30,7 @@ router.get("/:id", mid.validateUserIdParam, (req, res) => {
     });
 });
 
-router.post("/", restricted, mid.validateUserId, (req, res) => {
+router.post("/", restricted, mid.validateUserId, validateMerchantBody, (req, res) => {
   Merchant.insert(req.body)
     .then((merchant) => {
       res.status(201).json(merchant);
@@ -42,7 +43,7 @@ router.post("/", restricted, mid.validateUserId, (req, res) => {
     });
 });
 
-router.put("/:id", restricted, (req, res) => {
+router.put("/:id", restricted, mid.validateUserId, validateMerchantBody, validateMerchantIdParam, (req, res) => {
   Merchant.update(req.params.id, req.body)
     .then((merchant) => {
       res.status(201).json(merchant);
@@ -53,14 +54,12 @@ router.put("/:id", restricted, (req, res) => {
     });
 });
 
-router.delete("/:id", restricted, (req, res) => {
+router.delete("/:id", restricted, validateMerchantIdParam, (req, res) => {
   checkMyId(req.params.id);
   Merchant.remove(req.params.id).then((count) => {
-    res
-      .status(201)
-      .status({
-        message: `Merchant ${req.params.id} deleted. Count: ${count}`,
-      });
+    res.status(201).status({
+      message: `Merchant ${req.params.id} deleted. Count: ${count}`,
+    });
   });
 });
 

@@ -1,5 +1,3 @@
-// get, insert, delete
-
 const db = require("./../../database/dbConfig");
 
 module.exports = {
