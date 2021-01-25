@@ -1,5 +1,5 @@
 exports.up = function (knex) {
-  return knex.chema
+  return knex.schema
     .createTable("roles", (tbl) => {
       tbl.increments();
       tbl.string("name", 128).notNullable().unique();
@@ -35,7 +35,7 @@ exports.up = function (knex) {
       tbl
         .integer("user_id")
         .unsigned()
-        .required()
+        .notNullable()
         .references("id")
         .inTable("users")
         .onDelete("CASCADE")
@@ -43,7 +43,7 @@ exports.up = function (knex) {
       tbl
         .integer("location_id")
         .unsigned()
-        .required()
+        .notNullable()
         .references("id")
         .inTable("locations")
         .onDelete("RESTRICT")
@@ -58,7 +58,7 @@ exports.up = function (knex) {
       tbl
         .integer("category_id")
         .unsigned()
-        .required()
+        .notNullable()
         .references("id")
         .inTable("categories")
         .onDelete("RESTRICT")
@@ -66,7 +66,7 @@ exports.up = function (knex) {
       tbl
         .integer("user_id")
         .unsigned()
-        .required()
+        .notNullable()
         .references("id")
         .inTable("users")
         .onDelete("CASCADE")

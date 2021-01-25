@@ -15,7 +15,9 @@ function get() {
 function getById(id) {
   return db("items as i")
     .join("merchants as m", "i.user_id", "m.user_id")
-    .where("id", id)
+    .join("locations as l", "m.location_id", "l.id")
+    .select("i.name", "i.price", "i.category_id", "i.user_id", "i.description", "i.img_url", "m.name as merchant_name", "l.name as location_name", "m.location_id")
+    .where("i.id", id)
     .first();
 }
 
