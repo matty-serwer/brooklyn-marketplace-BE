@@ -17,7 +17,7 @@ const validateMerchantBody = (req, res, next) => {
 const validateMerchantIdParam = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const merchant = await Merchant.getById(id);
+    const merchant = await Merchant.getByMerchId(id);
     if(!merchant) {
       res.status(404).json({ message: "Invalid param: id" })
     } else {

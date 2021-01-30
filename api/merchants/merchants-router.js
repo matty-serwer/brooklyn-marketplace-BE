@@ -1,9 +1,12 @@
 const router = require("express").Router();
-const Merchant = require("./merchants-router");
+const Merchant = require("./merchants-model");
 const mid = require("./../middleware/users-middleware");
-const checkMyId = require("./../middleware/check-my-id-middleware");
+const { checkId } = require("./../middleware/check-my-id-middleware");
 const restricted = require("./../middleware/restricted");
-const { validateMerchantBody, validateMerchantIdParam } = require("./merchants-middleware");
+const {
+  validateMerchantBody,
+  validateMerchantIdParam,
+} = require("./merchants-middleware");
 
 // endpoints
 
@@ -17,7 +20,7 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/:id", mid.validateUserIdParam, validateMerchantIdParam, (req, res) => {
+router.get("/:id", mid.validateUserIdParam, (req, res) => {
   Merchant.getById(req.params.id)
     .then((merchant) => {
       res.status(200).json(merchant);
@@ -30,37 +33,54 @@ router.get("/:id", mid.validateUserIdParam, validateMerchantIdParam, (req, res) 
     });
 });
 
-router.post("/", restricted, mid.validateUserId, validateMerchantBody, (req, res) => {
-  Merchant.insert(req.body)
-    .then((merchant) => {
-      res.status(201).json(merchant);
-    })
-    .catch((error) => {
-      console.log(error);
-      res
-        .status(500)
-        .json({ message: "Server error posting merchant information" });
-    });
-});
+router.post(
+  "/",
+  restricted,
+  mid.validateUserId,
+  validateMerchantBody,
+  (req, res) => {
+    Merchant.insert(req.body)
+      .then((merchant) => {
+        res.status(201).json(merchant);
+      })
+      .catch((error) => {
+        console.log(error);
+        res
+          .status(500)
+          .json({ message: "Server error posting merchant information" });
+      });
+  }
+);
 
-router.put("/:id", restricted, mid.validateUserId, validateMerchantBody, validateMerchantIdParam, (req, res) => {
-  Merchant.update(req.params.id, req.body)
-    .then((merchant) => {
-      res.status(201).json(merchant);
-    })
-    .catch((error) => {
-      console.log(error);
-      res.status(500).json({ message: "Server error updating r" });
-    });
-});
+router.put(
+  "/:id",
+  restricted,
+  mid.validateUserId,
+  validateMerchantBody,
+  validateMerchantIdParam,
+  (req, res) => {
+    Merchant.update(req.params.id, req.body)
+      .then((merchant) => {
+        res.status(201).json(merchant);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).json({ message: "Server error updating merchant" });
+      });
+  }
+);
 
 router.delete("/:id", restricted, validateMerchantIdParam, (req, res) => {
-  checkMyId(req.params.id);
-  Merchant.remove(req.params.id).then((count) => {
-    res.status(201).status({
-      message: `Merchant ${req.params.id} deleted. Count: ${count}`,
+  Merchant.remove(req.params.id)
+    .then((count) => {
+      res.status(201).json({
+        message: `Merchant ${req.params.id} deleted. Count: ${count}`
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+      res.status(500).json({ message: "Server error deleting merchant" });
     });
-  });
 });
 
 module.exports = router;

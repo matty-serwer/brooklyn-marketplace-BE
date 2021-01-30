@@ -22,6 +22,7 @@ const validateItemIdParam = async (req, res, next) => {
       res.status(404).json({ message: "Invalid param: id" })
     } else {
       req.item = item;
+      req.user_id = item.user_id
       next();
     }
   } catch (error) {

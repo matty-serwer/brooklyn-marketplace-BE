@@ -3,6 +3,7 @@ const db = require('./../../database/dbConfig');
 module.exports = {
   get,
   getById,
+  getByMerchId,
   insert,
   update,
   remove,
@@ -17,6 +18,12 @@ function getById(id) {
     .join('users', 'users.id', 'merchants.user_id')
     .where('user_id', id)
     .first();
+}
+
+function getByMerchId(id) {
+  return db('merchants')
+    .where("id", id)
+    .first()
 }
 
 function insert(merchant) {
