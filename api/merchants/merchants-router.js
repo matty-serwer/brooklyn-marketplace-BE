@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Merchant = require("./merchants-model");
 const mid = require("./../middleware/users-middleware");
-const { checkId } = require("./../middleware/check-my-id-middleware");
+// const { checkId } = require("./../middleware/check-my-id-middleware");
 const restricted = require("./../middleware/restricted");
 const {
   validateMerchantBody,
@@ -74,7 +74,7 @@ router.delete("/:id", restricted, validateMerchantIdParam, (req, res) => {
   Merchant.remove(req.params.id)
     .then((count) => {
       res.status(201).json({
-        message: `Merchant ${req.params.id} deleted. Count: ${count}`
+        message: `Merchant ${req.params.id} deleted. Count: ${count}`,
       });
     })
     .catch((error) => {
